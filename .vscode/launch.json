@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "emulicious-debugger",
+      "request": "launch",
+      "name": "Run in Emulicious",
+      "program": "${workspaceFolder}/game.gb",
+      "port": 58870,
+      "stopOnEntry": false,
+      "preLaunchTask": "build"
+    }
+  ]
+}

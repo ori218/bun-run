@@ -1,0 +1,9 @@
+# Build output (recreated on every build)
+*.o
+*.gb
+*.gbc
+*.sym
+*.map
+
+# Emulator save data
+*.sav
