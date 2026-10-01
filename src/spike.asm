@@ -8,25 +8,20 @@ wSpawnTimer:: db
 SECTION "Spike", ROM0
 
 InitializeSpikes::
+    ld de, 4
     ld b, SPIKE_COUNT
-    ld hl, STARTOF(OAM) + 4
+    ld hl, STARTOF(OAM) + 2
 InitializationLoop:
-    ld a, 0
-    ld [hli], a
-    ld [hli], a
-    ld a, 1
-    ld [hli], a
-    ld a, 0
-    ld [hli], a
+    add hl, de
+    ld [hl], 1
     dec b
-    jp nz, InitializationLoop
+    jr nz, InitializationLoop
     ret
 
 SpawnSpikes::
     ld a, [wSpawnTimer]
     dec a
     ld [wSpawnTimer], a
-    and a
     jr nz, SpawnEnd
     
     ld b, SPIKE_COUNT + 1
@@ -36,9 +31,9 @@ FindInactive:
     add hl, de
     ld a, [hl]
     dec b
-    jp z, SpawnEnd
+    jr z, SpawnEnd
     and a
-    jp nz, FindInactive
+    jr nz, FindInactive
 
     push hl
 RandX:
@@ -59,6 +54,11 @@ RandX:
     add a, 10
     ld [wSpawnTimer], a
 SpawnEnd:
+    ld a, [wSpawnTimer]
+    and a
+    ret nz
+    inc a
+    ld [wSpawnTimer], a
     ret
 
 UpdateSpikes::
@@ -67,15 +67,40 @@ UpdateSpikes::
     ld hl, startof(OAM) + 4
 UpdateSpikesLoop:
     ld a, [hl]
-    and a 
+    and a
     jr z, NextSpike ; inactive
+
+    push hl
+    call CollisionCheck
+    pop hl
+
+    ld a, [hl] 
     inc a
     cp a, 117 + 16
     jr c, NextSpike
-    ld a, 0
+    xor a
+
 NextSpike:
     ld [hl], a
     add hl, de
     dec b
-    jp nz, UpdateSpikesLoop
+    jr nz, UpdateSpikesLoop
     ret
+
+CollisionCheck:
+    ld a, [STARTOF(OAM)]
+    sub [hl]
+    add 6
+    cp 13
+    ret nc
+
+    inc hl
+    ld a, [STARTOF(OAM) + 1]
+    sub a, [hl]
+    add 6
+    cp 12
+    jr c, DeathLoop
+    ret
+
+DeathLoop:
+    jr DeathLoop

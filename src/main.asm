@@ -12,7 +12,7 @@ WaitVBlank:
     jp c, WaitVBlank
 
 LoadGame:
-    ld a, 0
+    xor a
     ld [rLCDC], a
 
     ld de, Tiles
@@ -35,7 +35,7 @@ LoadGame:
     ld bc, HazardSpriteEnd - HazardSprite
     call MemCopy
 
-	ld a, 0
+	xor a
     ld b, 160
     ld hl, STARTOF(OAM)
 ClearOam:
@@ -48,7 +48,7 @@ ClearOam:
     ld [hli], a
     ld a, 76 + 8
     ld [hli], a
-    ld a, 0
+    xor a
     ld [hli], a
     ld [hli], a
 
@@ -62,7 +62,7 @@ ScreenOn:
     ld [rBGP], a
     ld [rOBP0], a
 
-    ld a, 0
+    xor a
 	ld [wCurKeys], a
     ld [wNewKeys], a
     ld a, 90
