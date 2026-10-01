@@ -1,7 +1,7 @@
 INCLUDE "hardware.inc"
 
 SECTION "Header", ROM0[$100]
-    jp EntryPoint
+    jr EntryPoint
     ds $150 - @, 0 
 
 EntryPoint:
@@ -9,7 +9,7 @@ EntryPoint:
 WaitVBlank:
     ld a, [rLY]
     cp 144
-    jp c, WaitVBlank
+    jr c, WaitVBlank
 
 LoadGame:
     xor a
@@ -71,11 +71,11 @@ ScreenOn:
 Main:
     ld a, [rLY]
 	cp 144
-	jp nc, Main
+	jr nc, Main
 WaitVBlank2:
 	ld a, [rLY]
 	cp 144
-	jp c, WaitVBlank2
+	jr c, WaitVBlank2
 
     call UpdateSpikes
     call SpawnSpikes
@@ -85,7 +85,7 @@ WaitVBlank2:
 CheckLeft:
     ld a, [wCurKeys]
     and a, PAD_LEFT
-    jp z, ChackRight
+    jr z, CheckRight
 Left:
     ld a, [startof(OAM) + 1]
     dec a
@@ -94,7 +94,7 @@ Left:
     ld [startof(OAM) + 1], a
     jp Main
 
-ChackRight:
+CheckRight:
     ld a, [wCurKeys]
     and a, PAD_RIGHT  
     jp z, Main
