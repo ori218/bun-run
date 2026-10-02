@@ -103,5 +103,9 @@ CollisionCheck:
     sub a, [hl]
     add 6
     cp 12
-    jp c, LoadGameOverScreen
+    jp c, .changeToGameOverState
     ret
+.changeToGameOverState:
+    ld a, 2
+    ld [wGameState], a
+    jp NextGameState

@@ -1,5 +1,5 @@
 SECTION "MathVariables", WRAM0
-randstate:: ds 1
+randstate:: ds 4
 
 SECTION "Math", ROM0
 
