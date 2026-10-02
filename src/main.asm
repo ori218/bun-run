@@ -11,7 +11,36 @@ WaitVBlank:
     cp 144
     jr c, WaitVBlank
 
-LoadGame:
+LoadTitleScreen:
+    xor a
+    ld [rLCDC], a
+
+    ld de, TitleScreenTiles
+    ld hl, $9000
+    ld bc, TitleScreenTilesEnd - TitleScreenTiles
+    call MemCopy
+
+    ld de, TitleScreenTilemap
+    ld hl, $9800
+    ld bc, TitleScreenTilemapEnd - TitleScreenTilemap
+    call MemCopy
+
+    ld a, LCDC_ON | LCDC_BG_ON
+    ld [rLCDC], a
+
+    ld a, %11100100
+    ld [rBGP], a
+TitleLoop:
+    call UpdateKeys
+    ld a, [wCurKeys]
+    cp PAD_START
+    jp z, LoadGameScreen
+    ld a, [randstate]
+    inc a
+    ld [randstate], a
+    jp TitleLoop
+
+LoadGameScreen:
     xor a
     ld [rLCDC], a
 

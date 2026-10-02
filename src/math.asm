@@ -1,6 +1,6 @@
 
 SECTION "MathVariables", WRAM0
-randstate:: ds 42
+randstate:: ds 1
 
 SECTION "Math", ROM0
 
