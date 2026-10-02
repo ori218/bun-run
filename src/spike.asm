@@ -1,6 +1,6 @@
 INCLUDE "hardware.inc"
 
-DEF SPIKE_COUNT EQU 10
+DEF SPIKE_COUNT EQU 7
 
 SECTION "Timer", WRAM0
 wSpawnTimer:: db
@@ -50,7 +50,7 @@ RandX:
     ld [hl], d
 
     call rand
-    and %00001111
+    and %00011111
     add a, 10
     ld [wSpawnTimer], a
 SpawnEnd:
@@ -75,6 +75,7 @@ UpdateSpikesLoop:
     pop hl
 
     ld a, [hl] 
+    inc a
     inc a
     cp a, 117 + 16
     jr c, NextSpike
