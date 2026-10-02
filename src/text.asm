@@ -6,7 +6,6 @@ wBlinkTimer:: db
 SECTION "Text", ROM0
 
 BlinkText::
-    ld hl, $9945
     ld a, [hl]
     and a
     jr z, ReDrawText
@@ -22,7 +21,6 @@ CleanLoop:
     ret
 
 ReDrawText:
-    ld de, TitleScreenTilemap + 10 * 32 + 5
     ld b, 10
 DrawLoop:
     ld a, [de]

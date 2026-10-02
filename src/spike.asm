@@ -103,8 +103,5 @@ CollisionCheck:
     sub a, [hl]
     add 6
     cp 12
-    jr c, DeathLoop
+    jp c, LoadGameOverScreen
     ret
-
-DeathLoop:
-    jr DeathLoop

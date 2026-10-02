@@ -52,8 +52,10 @@ WaitVBlank2:
     ld a, [wBlinkTimer]
     inc a
     ld [wBlinkTimer], a
-    cp 60
+    cp 90
     jp nz, TitleLoop
+    ld hl, $9945
+    ld de, TitleScreenTilemap + 10 * 32 + 5
     call BlinkText
     jp TitleLoop
 
@@ -158,3 +160,45 @@ Right:
     jp z, Main
     ld [startof(OAM) + 1], a
     jp Main
+
+LoadGameOverScreen::
+    xor a
+    ld [rLCDC], a
+
+    ld de, GameOverScreenTiles
+    ld hl, $9000
+    ld bc, GameOverScreenTilesEnd - GameOverScreenTiles
+    call MemCopy
+
+    ld de, GameOverScreenTilemap
+    ld hl, $9800
+    ld bc, GameOverScreenTilemapEnd - GameOverScreenTilemap
+    call MemCopy
+
+    ld a, %11100100
+    ld [rBGP], a
+
+    ld a, LCDC_ON | LCDC_BG_ON
+    ld [rLCDC], a
+GameOverLoop:
+    ld a, [rLY]
+	cp 144
+	jr nc, GameOverLoop
+WaitVBlank4:
+	ld a, [rLY]
+	cp 144
+	jr c, WaitVBlank4
+
+    call UpdateKeys
+    ld a, [wNewKeys]
+    and PAD_START
+    jp nz, LoadTitleScreen
+    ld a, [wBlinkTimer]
+    inc a
+    ld [wBlinkTimer], a
+    cp 90
+    jp nz, GameOverLoop
+    ld hl, $9985
+    ld de, GameOverScreenTilemap + 12 * 32 + 5
+    call BlinkText
+    jp GameOverLoop
