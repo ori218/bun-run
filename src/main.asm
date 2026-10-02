@@ -25,22 +25,43 @@ LoadTitleScreen:
     ld bc, TitleScreenTilemapEnd - TitleScreenTilemap
     call MemCopy
 
+    ld a, %11100100
+    ld [rBGP], a
+
     ld a, LCDC_ON | LCDC_BG_ON
     ld [rLCDC], a
 
-    ld a, %11100100
-    ld [rBGP], a
+    xor a
+    ld [wCurKeys], a
+    ld [wNewKeys], a
+    ld [wBlinkTimer], a
+
 TitleLoop:
+    ld a, [rLY]
+	cp 144
+	jr nc, TitleLoop
+WaitVBlank2:
+	ld a, [rLY]
+	cp 144
+	jr c, WaitVBlank2
+
     call UpdateKeys
-    ld a, [wCurKeys]
-    cp PAD_START
-    jp z, LoadGameScreen
-    ld a, [randstate]
+    ld a, [wNewKeys]
+    and PAD_START
+    jr nz, LoadGameScreen
+    ld a, [wBlinkTimer]
     inc a
-    ld [randstate], a
+    ld [wBlinkTimer], a
+    cp 60
+    jp nz, TitleLoop
+    call BlinkText
     jp TitleLoop
 
+
 LoadGameScreen:
+    ld a, [rDIV]
+    ld [randstate], a
+
     xor a
     ld [rLCDC], a
 
@@ -103,10 +124,10 @@ Main:
     ld a, [rLY]
 	cp 144
 	jr nc, Main
-WaitVBlank2:
+WaitVBlank3:
 	ld a, [rLY]
 	cp 144
-	jr c, WaitVBlank2
+	jr c, WaitVBlank3
 
     call UpdateSpikes
     call UpdateScoreBoard

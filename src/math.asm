@@ -1,4 +1,3 @@
-
 SECTION "MathVariables", WRAM0
 randstate:: ds 1
 
