@@ -65,6 +65,8 @@ ScreenOn:
     xor a
 	ld [wCurKeys], a
     ld [wNewKeys], a
+    ld [wScoreHigh], a
+    ld [wScoreLow], a
     ld a, 90
     ld [wSpawnTimer], a
 
@@ -78,6 +80,7 @@ WaitVBlank2:
 	jr c, WaitVBlank2
 
     call UpdateSpikes
+    call UpdateScoreBoard
     call SpawnSpikes
 
     call UpdateKeys

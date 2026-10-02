@@ -78,6 +78,9 @@ UpdateSpikesLoop:
     inc a
     cp a, 117 + 16
     jr c, NextSpike
+    push hl
+    call IncreaseScorePackedBCD
+    pop hl
     xor a
 
 NextSpike:
