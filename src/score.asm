@@ -47,3 +47,46 @@ IncreaseScorePackedBCD::
     daa
     ld [hl], a
     ret
+
+LoadHighScore::
+    ld a, RAMG_SRAM_ENABLE
+    ld [rRAMG], a
+
+    ld a, [sHighScoreHigh]
+    ld [wScoreHigh], a
+    ld a, [sHighScoreLow]
+    ld [wScoreLow], a
+
+    ld a, RAMG_SRAM_DISABLE
+    ld [rRAMG], a
+    ret
+
+UpdateHighScore::
+    ld a, RAMG_SRAM_ENABLE
+    ld [rRAMG], a
+
+    ld a, [sHighScoreHigh]
+    ld b, a
+    ld a, [wScoreHigh]
+    cp b
+    jr c, .notHigher
+    jr nz, .newHighScore
+
+    ld a, [sHighScoreLow]
+    ld b, a
+    ld a, [wScoreLow]
+    cp b
+    jr c, .notHigher
+    jr z, .notHigher 
+
+.newHighScore:
+    ld a, [wScoreHigh]
+    ld [sHighScoreHigh], a
+
+    ld a, [wScoreLow]
+    ld [sHighScoreLow], a
+
+.notHigher:
+    ld a, RAMG_SRAM_DISABLE
+    ld [rRAMG], a
+    ret

@@ -14,6 +14,8 @@ EntryPoint:
     ld [wCurKeys], a
     ld [wNewKeys], a
 
+	call CheckAndInitSaveData
+
 NextGameState::
     ld sp, $FFFE
     call WaitForOneVBlank

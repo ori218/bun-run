@@ -16,6 +16,12 @@ InitTitleScreenState::
     ld bc, TitleScreenTilemapEnd - TitleScreenTilemap
     call MemCopy
 
+    call LoadHighScore
+
+    ld hl, $994C
+    ld d, $32
+    call UpdateScoreBoard
+
     ld a, %11100100
     ld [rBGP], a
 
@@ -37,8 +43,8 @@ UpdateTitleScreenState::
     ld [wBlinkTimer], a
     cp 65
     jp nz, UpdateTitleScreenState
-    ld hl, $9945
-    ld de, TitleScreenTilemap + 10 * 32 + 5
+    ld hl, $9985
+    ld de, TitleScreenTilemap + 12 * 32 + 5
     call BlinkText
     jp UpdateTitleScreenState
 

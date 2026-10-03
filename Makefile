@@ -6,7 +6,7 @@ INC := $(wildcard src/*.inc)
 
 BunRun.gb: $(OBJ)
 > rgblink -o $@ -n BunRun.sym $^ 
-> rgbfix -v -p 0xFF $@ -t "Bun Run"
+> rgbfix -v -p 0xFF -m MBC1+RAM+BATTERY -r 2 -t "BUN RUN" $@
 
 obj/%.o: src/%.asm $(INC)
 > @mkdir -p obj

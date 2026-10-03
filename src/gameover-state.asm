@@ -17,6 +17,8 @@ InitGameOverState::
     ld d, $09
     call UpdateScoreBoard
 
+    call UpdateHighScore
+
     ld a, %11100100
     ld [rBGP], a
 
