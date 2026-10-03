@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "Blink Counter", WRAM0
 wBlinkTimer:: db
@@ -12,7 +13,7 @@ BlinkText::
 
 CleanText:
     xor a
-    ld b, 10
+    ld b, BLINK_TEXT_LEN
 CleanLoop:
     ld [hli], a
     dec b
@@ -21,7 +22,7 @@ CleanLoop:
     ret
 
 ReDrawText:
-    ld b, 10
+    ld b, BLINK_TEXT_LEN
 DrawLoop:
     ld a, [de]
     ld [hli], a

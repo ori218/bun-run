@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "GameScreen", ROM0
 
@@ -11,27 +12,27 @@ InitGameplayState::
     ld [randstate + 3], a
     
     ld de, Tiles
-    ld hl, $9000
+    ld hl, BG_TILES
     ld bc, TilesEnd - Tiles
     call MemCopy
 
     ld de, Tilemap
-    ld hl, $9800
+    ld hl, TILEMAP0
     ld bc, TilemapEnd - Tilemap
     call MemCopy
     
     ld de, BunnySprite
-    ld hl, $8000
+    ld hl, OBJ_TILES
     ld bc, BunnySpriteEnd - BunnySprite
 	call MemCopy
 
     ld de, HazardSprite
-    ld hl, $8010
+    ld hl, OBJ_TILES + SPIKE_TILE * TILE_SIZE
     ld bc, HazardSpriteEnd - HazardSprite
     call MemCopy
 
 	xor a
-    ld b, 160
+    ld b, OAM_SIZE
     ld hl, STARTOF(OAM)
 .clearOAM:
     ld [hli], a
@@ -39,9 +40,9 @@ InitGameplayState::
     jp nz, .clearOAM
 
     ld hl, STARTOF(OAM)
-    ld a, 116 + 16
+    ld a, PLAYER_START_Y + OAM_Y_OFS
     ld [hli], a
-    ld a, 76 + 8
+    ld a, PLAYER_START_X + OAM_X_OFS
     ld [hli], a
     xor a
     ld [hli], a
@@ -50,7 +51,7 @@ InitGameplayState::
     call InitializeSpikes
 
 .screenOn:
-    ld a, %11100100
+    ld a, DEFAULT_PALETTE
     ld [rBGP], a
     ld [rOBP0], a
 
@@ -60,7 +61,7 @@ InitGameplayState::
     xor a
     ld [wScoreHigh], a
     ld [wScoreLow], a
-    ld a, 90
+    ld a, FIRST_SPAWN_DELAY
     ld [wSpawnTimer], a
     
     ret
@@ -69,8 +70,8 @@ UpdateGameplayState::
     call WaitForOneVBlank
 
     call UpdateSpikes
-    ld hl, $9828
-    ld d, $16
+    ld hl, GAME_SCORE_POS
+    ld d, GAME_DIGIT_TILE
     call UpdateScoreBoard
     call SpawnSpikes
 
@@ -81,11 +82,11 @@ UpdateGameplayState::
     and a, PAD_LEFT
     jr z, .checkRight
 .left:
-    ld a, [startof(OAM) + 1]
+    ld a, [STARTOF(OAM) + OAMA_X]
     dec a
-    cp a, 76 + 8 - 30
+    cp a, PLAYER_MIN_X + OAM_X_OFS
     jp z, UpdateGameplayState
-    ld [startof(OAM) + 1], a
+    ld [STARTOF(OAM) + OAMA_X], a
     jp UpdateGameplayState
 
 .checkRight:
@@ -93,9 +94,9 @@ UpdateGameplayState::
     and a, PAD_RIGHT  
     jp z, UpdateGameplayState
 .right:
-    ld a, [startof(OAM) + 1]
+    ld a, [STARTOF(OAM) + OAMA_X]
     inc a
-    cp a, 76 + 8 + 30
+    cp a, PLAYER_MAX_X + OAM_X_OFS
     jp z, UpdateGameplayState
-    ld [startof(OAM) + 1], a
+    ld [STARTOF(OAM) + OAMA_X], a
     jp UpdateGameplayState

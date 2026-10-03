@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "GameVariables", WRAM0
 wGameState::db
@@ -17,7 +18,7 @@ EntryPoint:
 	call CheckAndInitSaveData
 
 NextGameState::
-    ld sp, $FFFE
+    ld sp, STACK_TOP
     call WaitForOneVBlank
 
     xor a
@@ -25,19 +26,19 @@ NextGameState::
     ld [wBlinkTimer], a
 
     ld a, [wGameState]
-	cp 2 ; 2 = GameOver
+	cp STATE_GAMEOVER
 	call z, InitGameOverState
 	ld a, [wGameState]
-	cp 1 ; 1 = Gameplay
+	cp STATE_GAMEPLAY
 	call z, InitGameplayState
 	ld a, [wGameState]
-	and a ; 0 = Title
+	and a ; STATE_TITLE
 	call z, InitTitleScreenState
 
 	; Update the next state
 	ld a, [wGameState]
-	cp 2 ; 2 = GameOver
+	cp STATE_GAMEOVER
 	jp z, UpdateGameOverState
-	cp 1 ; 1 = Gameplay
+	cp STATE_GAMEPLAY
 	jp z, UpdateGameplayState
 	jp UpdateTitleScreenState

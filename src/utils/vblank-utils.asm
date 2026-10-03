@@ -4,10 +4,10 @@ SECTION "VBlankFunctions", ROM0
 WaitForOneVBlank::
 .waitEnd:
     ld a, [rLY]
-    cp 144
+    cp LY_VBLANK
     jr nc, .waitEnd
 .waitStart:
     ld a, [rLY]
-    cp 144
+    cp LY_VBLANK
     jr c, .waitStart
     ret

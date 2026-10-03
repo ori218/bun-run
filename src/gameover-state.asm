@@ -1,25 +1,26 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "GameOverScreen", ROM0
 
 InitGameOverState::
     ld de, GameOverScreenTiles
-    ld hl, $9000
+    ld hl, BG_TILES
     ld bc, GameOverScreenTilesEnd - GameOverScreenTiles
     call MemCopy
 
     ld de, GameOverScreenTilemap
-    ld hl, $9800
+    ld hl, TILEMAP0
     ld bc, GameOverScreenTilemapEnd - GameOverScreenTilemap
     call MemCopy
 
-    ld hl, $996B
-    ld d, $09
+    ld hl, GAMEOVER_SCORE_POS
+    ld d, GAMEOVER_DIGIT_TILE
     call UpdateScoreBoard
 
     call UpdateHighScore
 
-    ld a, %11100100
+    ld a, DEFAULT_PALETTE
     ld [rBGP], a
 
     ld a, LCDC_ON | LCDC_BG_ON
@@ -36,14 +37,14 @@ UpdateGameOverState::
     ld a, [wBlinkTimer]
     inc a
     ld [wBlinkTimer], a
-    cp 65
+    cp BLINK_FRAMES
     jr nz, UpdateGameOverState
-    ld hl, $99A5
-    ld de, GameOverScreenTilemap + 13 * 32 + 5
+    ld hl, GAMEOVER_BLINK_TEXT_POS
+    ld de, GameOverScreenTilemap + GAMEOVER_BLINK_TEXT_POS - TILEMAP0
     call BlinkText
     jr UpdateGameOverState
 
 .changeToTitleState:
-    xor a
+    xor a ; STATE_TITLE
     ld [wGameState], a
     jp NextGameState

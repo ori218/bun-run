@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "TitleScreen", ROM0
 
@@ -7,22 +8,22 @@ InitTitleScreenState::
     ld [wBlinkTimer], a
     
     ld de, TitleScreenTiles
-    ld hl, $9000
+    ld hl, BG_TILES
     ld bc, TitleScreenTilesEnd - TitleScreenTiles
     call MemCopy
 
     ld de, TitleScreenTilemap
-    ld hl, $9800
+    ld hl, TILEMAP0
     ld bc, TitleScreenTilemapEnd - TitleScreenTilemap
     call MemCopy
 
     call LoadHighScore
 
-    ld hl, $994C
-    ld d, $32
+    ld hl, TITLE_HIGH_SCORE_POS
+    ld d, TITLE_DIGIT_TILE
     call UpdateScoreBoard
 
-    ld a, %11100100
+    ld a, DEFAULT_PALETTE
     ld [rBGP], a
 
     ld a, LCDC_ON | LCDC_BG_ON
@@ -41,14 +42,14 @@ UpdateTitleScreenState::
     ld a, [wBlinkTimer]
     inc a
     ld [wBlinkTimer], a
-    cp 65
+    cp BLINK_FRAMES
     jp nz, UpdateTitleScreenState
-    ld hl, $9985
-    ld de, TitleScreenTilemap + 12 * 32 + 5
+    ld hl, TITLE_BLINK_TEXT_POS
+    ld de, TitleScreenTilemap + TITLE_BLINK_TEXT_POS - TILEMAP0
     call BlinkText
     jp UpdateTitleScreenState
 
 .changeToGameplayState:
-    ld a, 1
+    ld a, STATE_GAMEPLAY
     ld [wGameState], a
     jp NextGameState

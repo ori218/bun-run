@@ -1,8 +1,5 @@
 INCLUDE "hardware.inc"
-
-DEF DIGIT_START EQU $9828
-DEF DIGIT_OFFSET EQU $16
-
+INCLUDE "constants.inc"
 
 SECTION "Counter", WRAM0
 wScoreLow:: db
@@ -12,24 +9,24 @@ SECTION "Score", ROM0
 
 UpdateScoreBoard::
     ld a, [wScoreHigh]
-    and %11110000
+    and HIGH_NIBBLE
     swap a
     add a, d 
     ld [hli], a
 
     ld a, [wScoreHigh]
-    and %00001111
+    and LOW_NIBBLE
     add a, d
     ld [hli], a
 
     ld a, [wScoreLow]
-    and %11110000
+    and HIGH_NIBBLE
     swap a
     add a, d 
     ld [hli], a
 
     ld a, [wScoreLow]
-    and %00001111
+    and LOW_NIBBLE
     add a, d
     ld [hl], a
 

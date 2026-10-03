@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "SaveVariables", SRAM
 
@@ -16,27 +17,27 @@ CheckAndInitSaveData::
     ld [rRAMG], a
 
     ld a, [sCheckSum1]
-    cp 100
+    cp SAVE_CHECKSUM_1
     jr nz, .init
 
     ld a, [sCheckSum2]
-    cp 150
+    cp SAVE_CHECKSUM_2
     jr nz, .init
 
     ld a, [sCheckSum3]
-    cp 200
+    cp SAVE_CHECKSUM_3
     jr nz, .init
 
     jr .end
 
 .init:
-    ld a, 100
+    ld a, SAVE_CHECKSUM_1
     ld [sCheckSum1], a
 
-    ld a, 150
+    ld a, SAVE_CHECKSUM_2
     ld [sCheckSum2], a
 
-    ld a, 200
+    ld a, SAVE_CHECKSUM_3
     ld [sCheckSum3], a
 
     xor a

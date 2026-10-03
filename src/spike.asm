@@ -1,6 +1,5 @@
 INCLUDE "hardware.inc"
-
-DEF SPIKE_COUNT EQU 7
+INCLUDE "constants.inc"
 
 SECTION "Timer", WRAM0
 wSpawnTimer:: db
@@ -8,12 +7,12 @@ wSpawnTimer:: db
 SECTION "Spike", ROM0
 
 InitializeSpikes::
-    ld de, 4
+    ld de, OBJ_SIZE
     ld b, SPIKE_COUNT
-    ld hl, STARTOF(OAM) + 2
+    ld hl, STARTOF(OAM) + OAMA_TILEID
 InitializationLoop:
     add hl, de
-    ld [hl], 1
+    ld [hl], SPIKE_TILE
     dec b
     jr nz, InitializationLoop
     ret
@@ -25,7 +24,7 @@ SpawnSpikes::
     jr nz, SpawnEnd
     
     ld b, SPIKE_COUNT + 1
-    ld de, 4
+    ld de, OBJ_SIZE
     ld hl, STARTOF(OAM)
 FindInactive:
     add hl, de
@@ -38,20 +37,20 @@ FindInactive:
     push hl
 RandX:
     call rand
-    and %00111111
-    cp 61
+    and SPIKE_X_MASK
+    cp SPIKE_X_RANGE
     jr nc, RandX
-    add a, 54
+    add a, SPIKE_MIN_X + OAM_X_OFS
     ld d, a
     pop hl
     
-    ld a, 1
+    ld a, SPIKE_SPAWN_Y
     ld [hli], a
     ld [hl], d
 
     call rand
-    and %00011111
-    add a, 10
+    and SPAWN_DELAY_MASK
+    add a, SPAWN_DELAY_MIN
     ld [wSpawnTimer], a
 SpawnEnd:
     ld a, [wSpawnTimer]
@@ -63,8 +62,8 @@ SpawnEnd:
 
 UpdateSpikes::
     ld b, SPIKE_COUNT
-    ld de, 4
-    ld hl, startof(OAM) + 4
+    ld de, OBJ_SIZE
+    ld hl, STARTOF(OAM) + OBJ_SIZE
 UpdateSpikesLoop:
     ld a, [hl]
     and a
@@ -75,9 +74,8 @@ UpdateSpikesLoop:
     pop hl
 
     ld a, [hl] 
-    inc a
-    inc a
-    cp a, 117 + 16
+    add a, SPIKE_SPEED
+    cp a, SPIKE_FLOOR_Y + OAM_Y_OFS
     jr c, NextSpike
     push hl
     call IncreaseScorePackedBCD
@@ -94,18 +92,18 @@ NextSpike:
 CollisionCheck:
     ld a, [STARTOF(OAM)]
     sub [hl]
-    add 6
-    cp 13
+    add HITBOX_OFFSET
+    cp HITBOX_HEIGHT
     ret nc
 
     inc hl
-    ld a, [STARTOF(OAM) + 1]
+    ld a, [STARTOF(OAM) + OAMA_X]
     sub a, [hl]
-    add 6
-    cp 12
+    add HITBOX_OFFSET
+    cp HITBOX_WIDTH
     jp c, .changeToGameOverState
     ret
 .changeToGameOverState:
-    ld a, 2
+    ld a, STATE_GAMEOVER
     ld [wGameState], a
     jp NextGameState
