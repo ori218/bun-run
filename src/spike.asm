@@ -10,36 +10,36 @@ InitializeSpikes::
     ld de, OBJ_SIZE
     ld b, SPIKE_COUNT
     ld hl, STARTOF(OAM) + OAMA_TILEID
-InitializationLoop:
+.initializationLoop:
     add hl, de
     ld [hl], SPIKE_TILE
     dec b
-    jr nz, InitializationLoop
+    jr nz, .initializationLoop
     ret
 
 SpawnSpikes::
     ld a, [wSpawnTimer]
     dec a
     ld [wSpawnTimer], a
-    jr nz, SpawnEnd
+    jr nz, .spawnEnd
     
     ld b, SPIKE_COUNT + 1
     ld de, OBJ_SIZE
     ld hl, STARTOF(OAM)
-FindInactive:
+.findInactive:
     add hl, de
     ld a, [hl]
     dec b
-    jr z, SpawnEnd
+    jr z, .spawnEnd
     and a
-    jr nz, FindInactive
+    jr nz, .findInactive
 
     push hl
-RandX:
+.randX:
     call rand
     and SPIKE_X_MASK
     cp SPIKE_X_RANGE
-    jr nc, RandX
+    jr nc, .randX
     add a, SPIKE_MIN_X + OAM_X_OFS
     ld d, a
     pop hl
@@ -52,7 +52,7 @@ RandX:
     and SPAWN_DELAY_MASK
     add a, SPAWN_DELAY_MIN
     ld [wSpawnTimer], a
-SpawnEnd:
+.spawnEnd:
     ld a, [wSpawnTimer]
     and a
     ret nz
@@ -64,10 +64,10 @@ UpdateSpikes::
     ld b, SPIKE_COUNT
     ld de, OBJ_SIZE
     ld hl, STARTOF(OAM) + OBJ_SIZE
-UpdateSpikesLoop:
+.updateSpikesLoop:
     ld a, [hl]
     and a
-    jr z, NextSpike ; inactive
+    jr z, .nextSpike ; inactive
 
     push hl
     call CollisionCheck
@@ -76,17 +76,17 @@ UpdateSpikesLoop:
     ld a, [hl] 
     add a, SPIKE_SPEED
     cp a, SPIKE_FLOOR_Y + OAM_Y_OFS
-    jr c, NextSpike
+    jr c, .nextSpike
     push hl
     call IncreaseScorePackedBCD
     pop hl
     xor a
 
-NextSpike:
+.nextSpike:
     ld [hl], a
     add hl, de
     dec b
-    jr nz, UpdateSpikesLoop
+    jr nz, .updateSpikesLoop
     ret
 
 CollisionCheck:

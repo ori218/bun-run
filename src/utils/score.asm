@@ -7,6 +7,10 @@ wScoreHigh:: db
 
 SECTION "Score", ROM0
 
+; Update the score tiles on the tile map.
+; @param hl: position of the first score digit on tile map.
+; @param d: the id of the "0" digit on the current tileset.
+; @destroys a, hl
 UpdateScoreBoard::
     ld a, [wScoreHigh]
     and HIGH_NIBBLE
@@ -32,10 +36,12 @@ UpdateScoreBoard::
 
     ret
 
+; Increases the score in the BCD format by 1
+; @destroys a, hl
 IncreaseScorePackedBCD::
     ld hl, wScoreLow
     ld a, [hl]
-    add 1
+    add 1 ; uses add for the flags that it sets
     daa
     ld [hl], a
     ld hl, wScoreHigh
@@ -45,6 +51,9 @@ IncreaseScorePackedBCD::
     ld [hl], a
     ret
 
+; Copies the saved high score from SRAM into wScoreHigh/wScoreLow,
+; overwriting the current score.
+; @destroys a
 LoadHighScore::
     ld a, RAMG_SRAM_ENABLE
     ld [rRAMG], a
@@ -58,6 +67,8 @@ LoadHighScore::
     ld [rRAMG], a
     ret
 
+; Updates the highscore and saves it to SRAM
+; @destroys a, b
 UpdateHighScore::
     ld a, RAMG_SRAM_ENABLE
     ld [rRAMG], a
