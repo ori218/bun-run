@@ -11,27 +11,28 @@ wScoreHigh:: db
 SECTION "Score", ROM0
 
 UpdateScoreBoard::
-    ld a, [wScoreLow]
-    and %11110000
-    swap a
-    add a, DIGIT_OFFSET 
-    ld [DIGIT_START + 2], a
-
-    ld a, [wScoreLow]
-    and %00001111
-    add a, DIGIT_OFFSET
-    ld [DIGIT_START + 3], a
-
     ld a, [wScoreHigh]
     and %11110000
     swap a
-    add a, DIGIT_OFFSET 
-    ld [DIGIT_START], a
+    add a, d 
+    ld [hli], a
 
     ld a, [wScoreHigh]
     and %00001111
-    add a, DIGIT_OFFSET
-    ld [DIGIT_START + 1], a
+    add a, d
+    ld [hli], a
+
+    ld a, [wScoreLow]
+    and %11110000
+    swap a
+    add a, d 
+    ld [hli], a
+
+    ld a, [wScoreLow]
+    and %00001111
+    add a, d
+    ld [hl], a
+
     ret
 
 IncreaseScorePackedBCD::

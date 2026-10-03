@@ -69,6 +69,8 @@ UpdateGameplayState::
     call WaitForOneVBlank
 
     call UpdateSpikes
+    ld hl, $9828
+    ld d, $16
     call UpdateScoreBoard
     call SpawnSpikes
 

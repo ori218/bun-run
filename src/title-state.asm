@@ -35,7 +35,7 @@ UpdateTitleScreenState::
     ld a, [wBlinkTimer]
     inc a
     ld [wBlinkTimer], a
-    cp 90
+    cp 65
     jp nz, UpdateTitleScreenState
     ld hl, $9945
     ld de, TitleScreenTilemap + 10 * 32 + 5

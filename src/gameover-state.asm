@@ -13,6 +13,10 @@ InitGameOverState::
     ld bc, GameOverScreenTilemapEnd - GameOverScreenTilemap
     call MemCopy
 
+    ld hl, $996B
+    ld d, $09
+    call UpdateScoreBoard
+
     ld a, %11100100
     ld [rBGP], a
 
@@ -30,10 +34,10 @@ UpdateGameOverState::
     ld a, [wBlinkTimer]
     inc a
     ld [wBlinkTimer], a
-    cp 90
+    cp 65
     jr nz, UpdateGameOverState
-    ld hl, $9985
-    ld de, GameOverScreenTilemap + 12 * 32 + 5
+    ld hl, $99A5
+    ld de, GameOverScreenTilemap + 13 * 32 + 5
     call BlinkText
     jr UpdateGameOverState
 
