@@ -24,6 +24,10 @@ DEF DEFAULT_PALETTE EQU %11_10_01_00 ; black, dark, light, white
 DEF BLINK_FRAMES    EQU 65 ; frames between blink text toggles
 DEF BLINK_TEXT_LEN  EQU 10 ; tiles in the blinking text
 
+; Screen fades
+DEF WHITE_PALETTE    EQU %00_00_00_00 ; full white
+DEF FADE_STEP_FRAMES EQU 5 ; frames each fade step is held
+
 ; Player (screen pixels, without the OAM offsets)
 DEF PLAYER_START_Y    EQU 116
 DEF PLAYER_START_X    EQU 76

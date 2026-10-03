@@ -21,6 +21,8 @@ NextGameState::
     ld sp, STACK_TOP
     call WaitForOneVBlank
 
+    call FadeOut
+
     xor a
 	ld [rLCDC], a
     ld [wBlinkTimer], a
@@ -34,6 +36,8 @@ NextGameState::
 	ld a, [wGameState]
 	and a ; STATE_TITLE
 	call z, InitTitleScreenState
+
+    call FadeIn
 
 	; Update the next state
 	ld a, [wGameState]

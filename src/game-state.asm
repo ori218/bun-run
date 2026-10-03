@@ -51,10 +51,6 @@ InitGameplayState::
     call InitializeSpikes
 
 .screenOn:
-    ld a, DEFAULT_PALETTE
-    ld [rBGP], a
-    ld [rOBP0], a
-
     ld a, LCDC_ON | LCDC_BG_ON | LCDC_OBJ_ON
     ld [rLCDC], a
 
