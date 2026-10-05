@@ -35,23 +35,40 @@ DEF PLAYER_MOVE_RANGE EQU 30 ; how far the player can move left/right from the s
 DEF PLAYER_MIN_X      EQU PLAYER_START_X - PLAYER_MOVE_RANGE
 DEF PLAYER_MAX_X      EQU PLAYER_START_X + PLAYER_MOVE_RANGE
 
-; Spikes
-DEF SPIKE_COUNT   EQU 7
+; Objects
+DEF SPIKE_FIRST_SLOT EQU 1
+DEF SPIKE_COUNT      EQU 7
+DEF COIN_FIRST_SLOT  EQU SPIKE_FIRST_SLOT + SPIKE_COUNT
+DEF COIN_COUNT       EQU 2
+ASSERT COIN_FIRST_SLOT + COIN_COUNT <= OAM_COUNT  ; 40 sprites max
+
 DEF SPIKE_TILE    EQU 1   ; tile ID of the spike sprite
-DEF SPIKE_SPAWN_Y EQU 1   ; Y = 0 marks a spike as inactive, so spawn just below it
-DEF SPIKE_FLOOR_Y EQU 117 ; spike scores and despawns when it falls past this
+DEF COIN_TILE     EQU 2   ; tile ID of the coin sprite
+
+DEF ACTIVE_SPAWN_Y EQU 1   ; Y = 0 marks a spike as inactive, so spawn just below it
+DEF FLOOR_Y EQU 117 ; spike scores and despawns when it falls past this
 DEF SPIKE_SPEED   EQU 2   ; pixels per frame
+DEF COIN_SPEED   EQU 1   ; pixels per frame
+
+DEF POINTS_PER_SECOND EQU $01
+DEF SPIKE_POINTS EQU $00
+DEF COIN_POINTS  EQU $10
 
 ; Spikes spawn anywhere the player can move
-DEF SPIKE_MIN_X   EQU PLAYER_MIN_X
-DEF SPIKE_X_RANGE EQU PLAYER_MAX_X - PLAYER_MIN_X + 1
-DEF SPIKE_X_MASK  EQU %00111111 ; random number mask, must cover SPIKE_X_RANGE
-ASSERT SPIKE_X_MASK >= SPIKE_X_RANGE - 1
+DEF OBJ_MIN_X   EQU PLAYER_MIN_X
+DEF OBJ_X_RANGE EQU PLAYER_MAX_X - PLAYER_MIN_X + 1
+DEF OBJ_X_MASK  EQU %00111111 ; random number mask, must cover SPIKE_X_RANGE
+ASSERT OBJ_X_MASK >= OBJ_X_RANGE - 1
 
-; Spawn timer (in frames)
-DEF FIRST_SPAWN_DELAY EQU 90
-DEF SPAWN_DELAY_MIN   EQU 10
-DEF SPAWN_DELAY_MASK  EQU %00011111 ; random extra delay between spikes, 0-31
+; Spike spawn timer (in frames)
+DEF FIRST_SPIKE_DELAY EQU 90
+DEF SPIKE_DELAY_MIN   EQU 10
+DEF SPIKE_DELAY_MASK  EQU %00011111 ; random extra delay between spikes, 0-31
+
+; Coin spawn timer (in frames)
+DEF FIRST_COIN_DELAY EQU 180
+DEF COIN_DELAY_MIN   EQU 60
+DEF COIN_DELAY_MASK  EQU %00111111 ; random extra delay between spikes, 0-63
 
 ; Collision between player and spike
 DEF HITBOX_OFFSET EQU 6

@@ -169,6 +169,11 @@ HazardSprite::
 	db $FF,$FF, $F9,$87, $7A,$46, $72,$4E, $34,$2C, $34,$2C, $18,$18, $18,$18
 HazardSpriteEnd::
 
+Coin::
+	db $3C,$3C, $7E,$42, $E7,$99, $DB,$A1, $DB,$A1, $E7,$81, $7E,$42, $3C,$3C
+CoinEnd::
+
+
 SECTION "Tilemap", ROM0
 
 Tilemap::

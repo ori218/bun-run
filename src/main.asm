@@ -14,6 +14,7 @@ EntryPoint:
     ld [wGameState], a
     ld [wCurKeys], a
     ld [wNewKeys], a
+	ld [wFrameCounter], a
 
 	call CheckAndInitSaveData
 

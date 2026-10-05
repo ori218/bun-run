@@ -1,6 +1,9 @@
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 
+SECTION "Frame Counter", WRAM0
+wFrameCounter:: db
+
 SECTION "GameScreen", ROM0
 
 InitGameplayState::
@@ -31,6 +34,11 @@ InitGameplayState::
     ld bc, HazardSpriteEnd - HazardSprite
     call MemCopy
 
+    ld de, Coin
+    ld hl, OBJ_TILES + COIN_TILE * TILE_SIZE
+    ld bc, CoinEnd - Coin
+    call MemCopy
+
 	xor a
     ld b, OAM_SIZE
     ld hl, STARTOF(OAM)
@@ -48,7 +56,15 @@ InitGameplayState::
     ld [hli], a
     ld [hli], a
 
-    call InitializeSpikes
+    ld hl, STARTOF(OAM) + OBJ_SIZE * SPIKE_FIRST_SLOT + OAMA_TILEID
+    ld b, SPIKE_COUNT
+    ld c, SPIKE_TILE
+    call InitializeObjects
+
+    ld hl, STARTOF(OAM) + OBJ_SIZE * COIN_FIRST_SLOT + OAMA_TILEID
+    ld b, COIN_COUNT
+    ld c, COIN_TILE
+    call InitializeObjects
 
 .screenOn:
     ld a, LCDC_ON | LCDC_BG_ON | LCDC_OBJ_ON
@@ -57,19 +73,46 @@ InitGameplayState::
     xor a
     ld [wScoreHigh], a
     ld [wScoreLow], a
-    ld a, FIRST_SPAWN_DELAY
-    ld [wSpawnTimer], a
+    ld a, FIRST_SPIKE_DELAY
+    ld [wSpikeSpawnTimer], a
+    ld a, FIRST_COIN_DELAY
+    ld [wCoinSpawnTimer], a
     
     ret
 
 UpdateGameplayState::
     call WaitForOneVBlank
 
+    ld hl, wFrameCounter
+    inc [hl]
+    ld a, [hl]
+    cp 60
+    jr nz, .update
+    ld b, POINTS_PER_SECOND
+    call AddScoreBCD
+    xor a
+    ld [wFrameCounter], a
+
+.update:
     call UpdateSpikes
+    call UpdateCoins
     ld hl, GAME_SCORE_POS
     ld d, GAME_DIGIT_TILE
     call UpdateScoreBoard
-    call SpawnSpikes
+    
+    ld hl, wSpikeSpawnTimer
+    ld b, SPIKE_COUNT
+    ld c, LOW(STARTOF(OAM) + OBJ_SIZE * (SPIKE_FIRST_SLOT - 1))
+    ld d, SPIKE_DELAY_MASK
+    ld e, SPIKE_DELAY_MIN
+    call SpawnObjects
+
+    ld hl, wCoinSpawnTimer
+    ld b, COIN_COUNT
+    ld c, LOW(STARTOF(OAM) + OBJ_SIZE * (COIN_FIRST_SLOT - 1))
+    ld d, COIN_DELAY_MASK
+    ld e, COIN_DELAY_MIN
+    call SpawnObjects
 
     call UpdateKeys
 

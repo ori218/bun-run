@@ -36,12 +36,13 @@ UpdateScoreBoard::
 
     ret
 
-; Increases the score in the BCD format by 1
+; Adds points to the score.
+; @param b: points to add in BCD ($00-$99)
 ; @destroys a, hl
-IncreaseScorePackedBCD::
+AddScoreBCD::
     ld hl, wScoreLow
     ld a, [hl]
-    add 1 ; uses add for the flags that it sets
+    add a, b ; uses add for the flags that it sets
     daa
     ld [hl], a
     ld hl, wScoreHigh
