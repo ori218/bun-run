@@ -170,7 +170,7 @@ HazardSprite::
 HazardSpriteEnd::
 
 Coin::
-	db $3C,$3C, $7E,$42, $E7,$99, $DB,$A1, $DB,$A1, $E7,$81, $7E,$42, $3C,$3C
+	db $3C,$3C, $7E,$42, $E7,$99, $DF,$A5, $DF,$A5, $FF,$99, $7E,$42, $3C,$3C
 CoinEnd::
 
 
